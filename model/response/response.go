@@ -1,10 +1,17 @@
 package response
 
 import (
-	"github.com/SniperCoding/VUniversity/model/errs"
 	"github.com/gin-gonic/gin"
+	"github.com/yifeng-coding/VUniversity/model/errs"
 	"net/http"
 )
+
+// ResponseWrapper 通用响应格式
+type ResponseWrapper struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+}
 
 func Response(c *gin.Context, err *errs.BizError, data any) {
 	if err != nil {

@@ -1,6 +1,6 @@
 package mysql
 
-import "github.com/SniperCoding/VUniversity/model/sql"
+import "github.com/yifeng-coding/VUniversity/model/sql"
 
 // GetPostList 分页加载帖子信息
 func GetPostList(pageNum, pageSize int) ([]*sql.Post, error) {

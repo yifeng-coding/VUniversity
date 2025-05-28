@@ -1,10 +1,10 @@
 package services
 
 import (
-	"github.com/SniperCoding/VUniversity/dal/mysql"
-	"github.com/SniperCoding/VUniversity/model/errs"
-	"github.com/SniperCoding/VUniversity/model/response"
 	"github.com/spf13/cast"
+	"github.com/yifeng-coding/VUniversity/dal/mysql"
+	"github.com/yifeng-coding/VUniversity/model/errs"
+	"github.com/yifeng-coding/VUniversity/model/response"
 )
 
 // GetPostList 分页加载帖子信息

@@ -1,18 +1,23 @@
 package handler
 
 import (
-	"fmt"
-	"github.com/SniperCoding/VUniversity/model/errs"
-	"github.com/SniperCoding/VUniversity/model/request"
-	"github.com/SniperCoding/VUniversity/model/response"
-	"github.com/SniperCoding/VUniversity/services"
 	"github.com/gin-gonic/gin"
+	"github.com/yifeng-coding/VUniversity/model/errs"
+	"github.com/yifeng-coding/VUniversity/model/request"
+	"github.com/yifeng-coding/VUniversity/model/response"
+	"github.com/yifeng-coding/VUniversity/services"
 )
 
+// @Summary		获取帖子列表
+// @Description	获取帖子列表，支持分页
+// @Tags		帖子
+// @Accept		json
+// @Produce		json
+// @Param		page_num	query		int															true	"页码"	minimum(1)	default(1)
+// @Param		page_size	query		int															true	"每页数量"	minimum(1)	maximum(50)	default(10)
+// @Success		200			{object}	response.ResponseWrapper{code=int,data=[]response.PostData}	"code为0表示成功，否则为失败"
+// @Router		/post/list [get]
 func GetPostList(c *gin.Context) {
-	pageNumStr := c.Query("page_num")
-	pageSizeStr := c.Query("page_size")
-	fmt.Printf("Raw page_num: %s, page_size: %s\n", pageNumStr, pageSizeStr)
 	req := &request.GetPostListRequest{}
 	// 绑定并校验参数
 	if err := c.ShouldBind(req); err != nil {

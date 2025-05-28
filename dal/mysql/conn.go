@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/SniperCoding/VUniversity/config"
+	"github.com/yifeng-coding/VUniversity/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"

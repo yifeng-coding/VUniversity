@@ -1,19 +1,21 @@
 package main
 
 import (
-	"github.com/SniperCoding/VUniversity/config"
-	"github.com/SniperCoding/VUniversity/dal/mysql"
-	"github.com/SniperCoding/VUniversity/middlewire"
-	"github.com/SniperCoding/VUniversity/router"
 	"github.com/gin-gonic/gin"
+	"github.com/yifeng-coding/VUniversity/config"
+	"github.com/yifeng-coding/VUniversity/dal/mysql"
+	_ "github.com/yifeng-coding/VUniversity/docs"
+	"github.com/yifeng-coding/VUniversity/middleware"
+	"github.com/yifeng-coding/VUniversity/router"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-func init() {
-
-}
-
+// @title			微学堂
+// @version			1.0
+// @description		本项目是一个前后端分离的多用户论坛项目，实现了用户注册、登录、发帖、评论、私信、点赞、关注、搜索、记录日志、敏感词过滤等功能。
+// @contact.name	一枫说码
+// @host			localhost:8080
 func main() {
 	// 初始化配置
 	config.GetConfig()
@@ -39,8 +41,9 @@ func main() {
 	defer zap.L().Sync()
 
 	r := gin.New()
-	r.Use(middlewire.ZapLogger()) // 使用zap日志中间件
-	r.Use(gin.Recovery())         // 使用恢复中间件
+	r.Use(middleware.CORSMiddleware()) // 使用跨域中间件
+	r.Use(middleware.ZapLogger())      // 使用zap日志中间件
+	r.Use(gin.Recovery())              // 使用恢复中间件
 	router.RegisterRouter(r)
 	if err := r.Run("127.0.0.1:8080"); err != nil {
 		panic(err)
