@@ -16,6 +16,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		// 放行所有OPTIONS方法
 		if c.Request.Method == http.MethodOptions {
 			c.AbortWithStatus(http.StatusNoContent)
+			return
 		}
 		c.Next()
 	}

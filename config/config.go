@@ -15,7 +15,19 @@ type Config struct {
 		Password string `json:"password"`
 		Charset  string `json:"charset"`
 		Loc      string `json:"loc"`
-	}
+	} `json:"mysql"`
+	Redis struct {
+		Host     string `json:"host"`
+		Port     int    `json:"port"`
+		Password string `json:"password"`
+		DB       int    `json:"db"`
+	} `json:"redis"`
+	Email struct {
+		Host     string `json:"host"`
+		Port     int    `json:"port"`
+		Username string `json:"username"`
+		Password string `json:"password"`
+	} `json:"email"`
 }
 
 // GetConfig 获取配置，使用sync.Once保证单例

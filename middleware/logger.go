@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"io"
+	"strings"
 	"time"
 )
 
@@ -26,10 +27,17 @@ func (r *responseBodyWriter) WriteString(s string) (int, error) {
 
 func ZapLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		filterPathPrefixes := []string{"/swagger", "/static"}
+		for _, prefix := range filterPathPrefixes {
+			if strings.HasPrefix(c.Request.URL.Path, prefix) {
+				c.Next()
+				return
+			}
+		}
 		start := time.Now()
 		// 记录请求体（c.Request.Body 是一个io.ReadCloser，读取后会被消耗（指针移到末尾）。当中间件读取了请求体，后续的处理函数（如 c.ShouldBindJSON()）将无法再次读取，因此读取后需要恢复）
 		var reqBody string
-		if c.Request.Body != nil {
+		if c.Request.Body != nil && c.Request.Header.Get("Content-Type") == "application/json" {
 			bodyBytes, _ := io.ReadAll(c.Request.Body)
 			reqBody = string(bodyBytes)
 			c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // 恢复请求体

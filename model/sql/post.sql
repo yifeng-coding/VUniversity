@@ -1,18 +1,19 @@
 -- post.sql
+DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post`
 (
     `id`            int          NOT NULL AUTO_INCREMENT COMMENT 'id',
     `user_id`       int          NOT NULL COMMENT '帖子所属用户id',
     `title`         varchar(255) NOT NULL COMMENT '标题',
     `content`       text         NOT NULL COMMENT '内容',
-    `comment_count` int          NOT NULL DEFAULT '0' COMMENT '帖子评论数量',
-    `score`         int          NOT NULL DEFAULT '0' COMMENT '帖子分数',
-    `type`          int          NOT NULL DEFAULT '0' COMMENT '帖子类型，0正常 1加精',
-    `state`         int          NOT NULL DEFAULT '0' COMMENT '帖子状态，0正常 1置顶 2拉黑',
+    `comment_count` int          NOT NULL DEFAULT 0 COMMENT '帖子评论数量',
+    `score`         int          NOT NULL DEFAULT 0 COMMENT '帖子分数',
+    `type`          int          NOT NULL DEFAULT 0 COMMENT '帖子类型，0正常 1加精',
+    `state`         int          NOT NULL DEFAULT 0 COMMENT '帖子状态，0正常 1置顶 2拉黑',
     `create_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
-    INDEX `idx_user_id` (`user_id`) -- user_id 索引
+    INDEX           `idx_user_id` (`user_id`) -- user_id 索引
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 添加测试数据

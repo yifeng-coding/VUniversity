@@ -1,8 +1,7 @@
-package response
+package model
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/yifeng-coding/VUniversity/model/errs"
 	"net/http"
 )
 
@@ -13,7 +12,7 @@ type ResponseWrapper struct {
 	Data    any    `json:"data,omitempty"`
 }
 
-func Response(c *gin.Context, err *errs.BizError, data any) {
+func Response(c *gin.Context, err *BizError, data any) {
 	if err != nil {
 		Fail(c, err)
 	} else {
@@ -30,7 +29,7 @@ func Success(c *gin.Context, data any) {
 	})
 }
 
-func Fail(c *gin.Context, err *errs.BizError) {
+func Fail(c *gin.Context, err *BizError) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    err.Code(),
 		"message": err.Message(),

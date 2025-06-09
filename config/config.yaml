@@ -1,8 +1,18 @@
-mysql:   # mysql配置
-  host: 127.0.0.1          # 地址
-  port: 3307               # 端口
+mysql: # mysql配置
+  host: 127.0.0.1
+  port: 3307
   database: vuniversity    # 库名
-  username: root           # 用户名
-  password: 123            # 密码
-  charset: utf8            # 字符集
-  loc: Asia/Shanghai       # 时区设置
+  username: root
+  password: 123
+  charset: utf8
+  loc: Asia/Shanghai
+redis: # redis配置
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+email: # 邮件配置
+  host: smtp.qq.com
+  port: 465
+  username: ""      # 你的邮箱名，如果这里不填，会读取环境变量Vuniversity_Email_UserName的值，如果二者均没有设置，则panic
+  password: ""      # 你的邮箱授权码（注意不是邮箱密码），如果这里不填，会读取环境变量Vuniversity_Email_Password的值，如果二者均没有设置，则panic
