@@ -40,7 +40,7 @@ func CreateUser(ctx context.Context, username, password, email, verifyCode strin
 		return nil, model.ServerError.WithMessage(err.Error())
 	}
 	// 创建用户
-	createUser, err := mysql.CreateUser(ctx, username, string(hashedPasswordBytes), email)
+	dbUser, err := mysql.CreateUser(ctx, username, string(hashedPasswordBytes), email)
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") {
 			return nil, model.UserAlreadyExist
@@ -49,10 +49,10 @@ func CreateUser(ctx context.Context, username, password, email, verifyCode strin
 	}
 
 	result := &model.UserData{
-		ID:              createUser.ID,
-		Username:        createUser.Username,
-		Email:           createUser.Email,
-		CreateTimestamp: cast.ToString(createUser.CreateTime.Unix()),
+		ID:              dbUser.ID,
+		Username:        dbUser.Username,
+		Email:           dbUser.Email,
+		CreateTimestamp: cast.ToString(dbUser.CreateTime.Unix()),
 	}
 	return result, nil
 }

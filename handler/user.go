@@ -5,12 +5,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/spf13/cast"
+	"github.com/yifeng-coding/VUniversity/dal/redis"
 	"github.com/yifeng-coding/VUniversity/model"
 	"github.com/yifeng-coding/VUniversity/service"
+	"go.uber.org/zap"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 )
 
 // @Summary		创建用户
@@ -77,8 +80,8 @@ func UserLogin(c *gin.Context) {
 	return
 }
 
-// @Summary		获取用户信息
-// @Description	获取用户信息
+// @Summary		获取当前登录用户信息
+// @Description	获取当前登录用户信息
 // @Tags			用户
 // @Accept			json
 // @Produce		json
@@ -94,6 +97,34 @@ func GetUserInfo(c *gin.Context) {
 	}
 	data, err := service.GetUserInfo(c.Request.Context(), cast.ToInt(userID))
 	model.Response(c, err, data)
+	return
+}
+
+// @Summary		获取指定用户信息
+// @Description	根据用户ID获取公开可见的用户信息
+// @Tags			用户
+// @Accept			json
+// @Produce		json
+// @Param			user_id	path		int													true	"用户ID"
+// @Success		200		{object}	model.ResponseWrapper{code=int,data=model.UserData}	"code为0表示成功，否则为失败"
+// @Router			/user/get/{user_id} [get]
+func GetUserByID(c *gin.Context) {
+	// 从路径参数中获取user_id
+	userIDStr := c.Param("user_id")
+	userID, err := cast.ToIntE(userIDStr)
+	if err != nil {
+		model.Fail(c, model.ParamInvalid.WithMessage(err.Error()))
+		return
+	}
+	// 获取用户信息
+	data, err_ := service.GetUserInfo(c.Request.Context(), userID)
+	if err_ != nil {
+		model.Fail(c, err_)
+		return
+	}
+	// 过滤掉敏感信息
+	data.Email = ""
+	model.Success(c, data)
 	return
 }
 
@@ -191,6 +222,24 @@ func UploadAvatar(c *gin.Context) {
 		model.Fail(c, model.UserNotLogin)
 		return
 	}
+	// 限流，一天最多上传5张图片
+	key := fmt.Sprintf("[upload_avatar_count]%s_%s", time.Now().Format(time.DateOnly), userID)
+	count, err := redis.GetRedis().Incr(c.Request.Context(), key).Result()
+	if err != nil {
+		model.Fail(c, model.ServerError.WithMessage(err.Error()))
+		return
+	}
+	// 设置key的过期时间，失败了忽略
+	go func() {
+		if err := redis.GetRedis().Expire(c.Request.Context(), key, 24*time.Hour).Err(); err != nil {
+			zap.L().Warn("set redis key expire failed", zap.String("key", key), zap.Error(err))
+		}
+	}()
+	if count > 5 {
+		model.Fail(c, model.ParamInvalid.WithMessage("一天仅允许上传5张图片"))
+		return
+	}
+
 	// 解析上传的文件
 	file, err := c.FormFile("avatar")
 	if err != nil {

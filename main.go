@@ -9,6 +9,7 @@ import (
 	_ "github.com/yifeng-coding/VUniversity/docs"
 	"github.com/yifeng-coding/VUniversity/middleware"
 	"github.com/yifeng-coding/VUniversity/router"
+	"github.com/yifeng-coding/VUniversity/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -37,6 +38,8 @@ func main() {
 	mysql.GetDB()
 	// 初始化Redis
 	redis.GetRedis()
+	// 初始化敏感词过滤器
+	util.GetSensitiveFilter()
 	// 初始化日志（同时输出到控制台和文件）
 	logger, _ := zap.Config{
 		Level:    zap.NewAtomicLevelAt(zap.InfoLevel), // 设置日志级别

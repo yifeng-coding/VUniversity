@@ -20,12 +20,14 @@ func CreateUser(ctx context.Context, username, password, email string) (*sql.Use
 	return user, err
 }
 
+// GetUserByEmail 根据邮箱获取用户
 func GetUserByEmail(ctx context.Context, email string) (*sql.User, error) {
 	var user sql.User
 	err := GetDB().WithContext(ctx).Where("email = ?", email).First(&user).Error
 	return &user, err
 }
 
+// GetUserByID 根据ID获取用户
 func GetUserByID(ctx context.Context, id int) (*sql.User, error) {
 	var user sql.User
 	err := GetDB().WithContext(ctx).Where("id = ?", id).First(&user).Error
@@ -44,6 +46,7 @@ func UpdateUser(ctx context.Context, userID int, updates map[string]any) error {
 	return err
 }
 
+// MGetUserByIDs 批量获取用户信息
 func MGetUserByIDs(ctx context.Context, userIDs []int) (map[int]*sql.User, error) {
 	var users []*sql.User
 	err := GetDB().WithContext(ctx).Where("id in ?", userIDs).Find(&users).Error

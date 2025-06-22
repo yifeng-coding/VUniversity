@@ -20,6 +20,10 @@ func RegisterRouter(r *gin.Engine) {
 	// 帖子相关
 	post := r.Group("post")
 	post.GET("/list", handler.GetPostList)
+	post.POST("/create", middleware.AuthMiddleware(), handler.CreatePost) // 需要登录
+	post.POST("/update", middleware.AuthMiddleware(), handler.UpdatePost) // 需要登录
+	post.POST("/delete", middleware.AuthMiddleware(), handler.DeletePost) // 需要登录
+	post.GET("/get/:post_id", handler.GetPostByID)
 
 	// 用户相关
 	user := r.Group("user")
@@ -27,10 +31,11 @@ func RegisterRouter(r *gin.Engine) {
 	user.GET("/register_code", handler.GetRegisterVerifyCode)
 	user.POST("/login", handler.UserLogin)
 	user.POST("/refresh_token", handler.GetNewTokenByRefreshToken)
-	user.GET("/info", middleware.AuthMiddleware(), handler.GetUserInfo)                // 需要鉴权
-	user.POST("/update/info", middleware.AuthMiddleware(), handler.UpdateUser)         // 需要鉴权
-	user.POST("/update/password", middleware.AuthMiddleware(), handler.UpdatePassword) // 需要鉴权
-	user.POST("/upload/avatar", middleware.AuthMiddleware(), handler.UploadAvatar)     // 需要鉴权
+	user.GET("/info", middleware.AuthMiddleware(), handler.GetUserInfo)                // 需要登录
+	user.POST("/update/info", middleware.AuthMiddleware(), handler.UpdateUser)         // 需要登录
+	user.POST("/update/password", middleware.AuthMiddleware(), handler.UpdatePassword) // 需要登录
+	user.POST("/upload/avatar", middleware.AuthMiddleware(), handler.UploadAvatar)     // 需要登录
+	user.GET("/get/:user_id", handler.GetUserByID)
 
 	// 注册静态文件服务(用于上传头像)
 	r.Static("/static", "./static")
